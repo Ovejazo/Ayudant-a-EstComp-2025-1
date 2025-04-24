@@ -4,9 +4,10 @@ author: "Thomas Riffo"
 date: "2025-04-22"
 output: html_document
 ---
-Ya tengo la idea clara al menos.
-Por lo que puedo ver, el profe no paso TODAS las distribuciones, por lo cual solo me enfocare en hacer ejercicios de distribución normal, de Poisson y binomial, que son las que el profe paso en clases, de todas formas me gustaría pasar algunas distribuciones más (Como Bernoulli).
-Hay varias distribuciones.
+
+### *DISTRIBUCIONES*
+
+Hay varias distribuciones en el mundo de las estadisticas, las distribuciones nos permiten identificar la probabilidad de que "tal evento ocurra".
 
 - **Geometrica**
 - **Hipergeometrica**
@@ -23,7 +24,7 @@ Descargamos las librerías
 ```
 
 
-## Ejercicio de distribución normal.
+### Ejercicio de distribución normal.
 
 - **dnorm:** Calcula la densidad de una distribución normal.  
 - **pnorm:** Calcula la distribución acumulada. 
@@ -76,10 +77,10 @@ ggplot(df, aes(x, y)) +
 ```
 Halle el valor de k tal que el 5% de los contribuyentes tarda más de k minutos en diligenciar el formulario.
 ```{r}
-normal_percentil = qnorm(0.95, mu = mu, sd = sigma)
+normal_percentil = qnorm(0.95, mean = mu, sd = sigma)
 ```
 
-## Ejercicio de binomial.
+### Ejercicio de binomial.
 
 Un abogado se traslada diariamente desde su casa (en los suburbios) a su oficina en el centro de la ciudad. En promedio, el viaje le toma 24 minutos con una desviación estándar de 3.8 minutos. Asuma que la distribución de los tiempos de traslado está normalmente distribuida.
 
@@ -123,15 +124,19 @@ p_binomial <- 1 - dbinom(0, size = 5, prob = p_lento_intervalo) - dbinom(1, size
 round(p_binomial, 4)
 ```
 
-# Ejercicio de Poisson
+### Ejercicio de Poisson
 
-La fórmula de la distribución de Poisson es \( P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!} \)
+Formula de Poisson:
+Como es LaTex, se pueden escribir así las formulas (hay que saberse las notaciones)
+$$
+P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}
+$$
+
 
 
 Un centro de llamadas recibe en promedio 4 llamadas por hora. Suponiendo que las llamadas llegan de manera aleatoria y que el número de llamadas por hora sigue una distribución de Poisson, contesta las siguientes preguntas:
 
 ¿Cuál es la probabilidad de que el centro de llamadas reciba exactamente 5 llamadas en una hora?
-
 ```{r}
 
 #Definimos las variables
@@ -179,7 +184,7 @@ poisson_acumulado_menos
 
 ¿Cuál es la probabilidad de que el centro de llamadas reciba 2 o más llamadas en una hora?
 ```{r}
-poisson_acumulado_mas = 1 - dpois(q = 2, lambda = 4)
+poisson_acumulado_mas = 1 - ppois(q = 2, lambda = 4)
 poisson_acumulado_mas
 ```
 
