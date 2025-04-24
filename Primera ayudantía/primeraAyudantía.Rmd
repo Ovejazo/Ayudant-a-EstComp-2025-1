@@ -1,0 +1,129 @@
+---
+title: "Ayudantía 2"
+author: "Thomas Riffo"
+date: "2025-04-11"
+output: html_document
+---
+
+##### Me comi un pan con queso
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+#Hola como estamos1
+if(!require(dplyr)) install.packages("dplyr") #Para filtrar/leer excel
+if(!require(tidyr)) install.packages("tidyr")
+if(!require(ggplot2)) install.packages("ggplot2") #Para graficar
+if(!require(ggpubr)) install.packages("ggpubr")
+if(!require(ggmosaic)) install.packages("ggmosaic")
+if(!require(kableExtra)) install.packages("kableExtra") #Para crear la tabla
+if(!require(pwr)) install.packages("pwr")
+if(!require(tidyverse)) install.packages("tidyverse")
+if(!require(rcompanion)) install.packages("rcompanion")
+if(!require(RVAideMemoire)) install.packages("RVAideMemoire")
+if(!require(ez)) install.packages("ez")
+if(!require(nlme)) install.packages("nlme")
+if(!require(emmeans)) install.packages("emmeans")
+if(!require(pROC)) install.packages("pROC")
+if(!require(caret)) install.packages("caret")
+if(!require(leaps)) install.packages("leaps")
+if(!require(car)) install.packages("car")
+```
+
+
+--------------------------------------------------------------------------------------------------------------
+
+
+```{r}
+#Hola como estamos2
+if(!require(dplyr)) install.packages("dplyr")
+if(!require(tidyr)) install.packages("tidyr")
+if(!require(ggplot2)) install.packages("ggplot2")
+if(!require(ggpubr)) install.packages("ggpubr")
+if(!require(ggmosaic)) install.packages("ggmosaic")
+if(!require(kableExtra)) install.packages("kableExtra")
+if(!require(pwr)) install.packages("pwr")
+if(!require(tidyverse)) install.packages("tidyverse")
+if(!require(rcompanion)) install.packages("rcompanion")
+if(!require(RVAideMemoire)) install.packages("RVAideMemoire")
+if(!require(ez)) install.packages("ez")
+if(!require(nlme)) install.packages("nlme")
+if(!require(emmeans)) install.packages("emmeans")
+if(!require(pROC)) install.packages("pROC")
+if(!require(caret)) install.packages("caret")
+if(!require(leaps)) install.packages("leaps")
+if(!require(car)) install.packages("car")
+data(car)
+```
+
+
+# En esta sección mostramos como leer un excel.
+```{r}
+#Guardamos el excel en data
+data = read.csv2("Desempeño estudiantes.csv")
+
+#Aquí podemos recuperar columnas
+Genero = data$sex
+Edad = data$age
+
+#También podemos filtrar, se puede usar ",", "&" y "|".
+Hombres = data %>% filter(sex == "M" & age > 16)
+
+#Podemos agregar columnas por ejemplo
+data$edadAdicional = Edad + Edad
+
+#Podemos obtener las medidas de tendencia central, por ejemplo, moda, media y mediana.
+median(Edad)
+mean(Edad)
+
+#no hay para la moda, pero para que complicarse ¯\_(ツ)_/¯.
+summary(Edad)
+```
+
+# En esta sección armamos una tabla
+```{r}
+# Sample data
+tabla <- data.frame(
+  Name = c("John", "Paul", "George", "Ringo"),
+  Instrument = c("Guitar", "Bass", "Guitar", "Drums"),
+  Age = c(40, 35, 38, 42)
+)
+# Create a basic table
+kable(tabla)
+```
+
+# En esta sección armamos un grafico, en este caso, vamos hacer solo un histograma.
+
+Primera manera para poder hacer un histograma
+```{r}
+hist(Edad)
+```
+
+***Segunda*** manera para poder hacer un histograma
+```{r}
+# histogram with added parameters
+hist(Edad,
+main="Maximum daily temperature at La Guardia Airport",
+xlab="Temperature in degrees Fahrenheit",
+xlim=c(15,30),
+col="darkmagenta",
+freq=FALSE
+)
+```
+
+```{r}
+# histogram with added parameters
+boxplot(Edad, horizontal = TRUE)
+```
+***tercera*** forma para poder graficar
+```{r}
+library(ggplot2)
+
+ggplot(data, aes(x = age)) +
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
+  labs(
+    title = "histograma de Edad",
+    x = "edad",
+    y = "frecuencia"
+  ) +
+  theme_minimal()
+
+```
