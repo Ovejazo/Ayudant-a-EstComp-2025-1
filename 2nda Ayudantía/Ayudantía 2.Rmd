@@ -1,0 +1,145 @@
+---
+title: "Ayudantía"
+author: "Thomas Riffo"
+date: "2025-04-25"
+output: html_document
+---
+
+# ***Ayudantía N°2***
+```{r warning=FALSE, echo=FALSE, message=FALSE}
+# Descargamos las librerías.
+library(dplyr)
+library(magick) #Para leer imagenes
+library(png) #Para leer imagenes
+library(jpeg) #Para leer imagenes
+```
+```{r echo = FALSE}
+# Leer la imagen
+img <- readJPEG("U i i a i.jpg")
+
+# Crear un gráfico y mostrar la imagen
+#plot(1:10, 1:10, type = "n")
+#rasterImage(img, 2, 2, 8, 8)
+```
+
+![Texto alternativo](U i i a i.jpg)
+
+```{r}
+datos <- read.csv2("Notas.csv")
+
+#Vamos a conseguir las notas en columnas
+PEP_I = as.numeric(datos$PEP.I)
+PEP_II = as.numeric(datos$PEP.II)
+PEP_III = as.numeric(datos$PEP.III)
+
+notas = as.numeric(datos$PEP.I)
+notas = append(notas, as.numeric(datos$PEP.II))
+notas = append(notas, as.numeric(datos$PEP.III))
+
+print(notas)
+prom = mean(notas)
+print(prom)
+                   
+#Ahora las vamos a sumar y sacar su media y desviación estandar
+total_notas = c(PEP_I, PEP_II, PEP_III)
+media = mean(total_notas)
+varianza = sd(total_notas)
+media 
+varianza
+```
+
+Ahora que tenemos las notas de los estudiantes, vamos con las preguntas
+
+### Preguntas
+
+1. Suponiendo que las notas siguen una distribución normal con la media y desviación estándar calculadas, ¿cuál es la probabilidad de que un estudiante tenga una nota mayor a 6.0?   
+```{r}
+1 - pnorm(6.0, mean = media, sd = sqrt(varianza))
+pnorm(6.0, mean = media, sd = sqrt(varianza), lower.tail = FALSE)
+```
+
+2. Según la Regla Empírica (Regla 68-95-99.7), ¿Entre qué valores se espera que estén aproximadamente el 68% de las notas?  
+```{r}
+#Hay que usar el grafico que voy a mostrar
+```
+
+3. ¿Cuál es la probabilidad de que un estudiante tenga una nota menor a 2.0?
+```{r}
+pnorm(2.0, mean = media, sd = sqrt(varianza))
+```
+
+4. Suponiendo que las notas siguen una distribución normal, ¿cuál debería ser la nota mínima para estar dentro del 10% superior de estudiantes?
+```{r}
+# Nota mínima para estar en el top 10%
+qnorm(0.90, mean = media, sd = sqrt(varianza))
+```
+  5. Dado los promedio de Ian Rioseco y Nelson Cereno, ¿Quién está más lejos del promedio general, en términos de desviaciones estándar? ¿Quién tuvo el desempeño más atípico?
+```{r}
+# Promedios individuales
+prom_Ian <- mean(c(7.0, 3.0, 1.0))
+prom_Nelson <- mean(c(4.9, 5.6, 6.1))
+
+# Score z
+z_Ian <- (prom_Ian - media) / sqrt(varianza)
+z_Nelson <- (prom_Nelson - media) / sqrt(varianza)
+
+# Mostrar valores absolutos para ver quién está más lejos
+abs(z_Ian)
+abs(z_Nelson)
+```
+
+6. Si se eligen 5 estudiantes al azar, ¿cuál es la probabilidad de que al menos 3 tengan una nota promedio mayor a 5.0?
+```{r}
+# Probabilidad de que una persona tenga promedio > 5.0
+p_individual <- 1 - pnorm(5.0, mean = media, sd = sqrt(varianza))
+
+# Probabilidad de que al menos 3 de 5 lo logren (binomial)
+p_grupo <- 1 - pbinom(2, size = 5, prob = p_individual)
+p_grupo
+```
+
+
+```{r}
+# Librerías necesarias
+library(ggplot2)
+
+desviacion_estandar <- sqrt(varianza)
+
+# Rango de valores para X (por ejemplo, de -3 a +3 desviaciones estándar)
+x <- seq(media - 4*varianza, media + 4*varianza, length.out = 1000)
+
+# Distribución normal para Y (densidad de probabilidad)
+y <- dnorm(x, mean = media, sd = varianza)
+
+# Crear el dataframe para ggplot
+df <- data.frame(x = x, y = y)
+
+# Gráfico de la distribución normal
+ggplot(df, aes(x = x, y = y)) +
+  geom_line(color = "blue") + 
+  # Colorear el área bajo la curva para representar el 68%
+  geom_ribbon(data = df[x >= (media - varianza) & x <= (media + varianza), ],
+              aes(ymax = y), ymin = 0, fill = "skyblue", alpha = 0.5) +
+  # Colocar la media en la gráfica
+  geom_vline(xintercept = media, color = "red", linetype = "dashed") +
+  # Texto indicando la media
+  annotate("text", x = media, y = 0.02, label = paste("Media =", round(media, 2)), color = "red", vjust = -1) +
+  # Agregar título y etiquetas
+  labs(title = "Distribución Normal de Notas", 
+       x = "Notas", 
+       y = "Densidad de Probabilidad") +
+  theme_minimal()
+```
+
+
+```{r}
+#Creacion de un grafico para distribucion normal para las notas 
+x=seq(1,7,by=0.01) # Creacion de arreglo para eje x
+y=dnorm(x,prom,varianza) # Distribucion normal
+datos=data.frame(x,y)
+#Grafico
+p = ggplot(data.frame(x = x, y = y)) + aes(x = x, y = y)
+p = p+geom_line(color="darkblue") + labs(x = "Dist. normal", y = "Densidad")
+p = p + theme_classic()
+plot(p)
+```
