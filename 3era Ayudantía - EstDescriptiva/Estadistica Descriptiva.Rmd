@@ -1,0 +1,114 @@
+---
+title: "Control I"
+author: "Thomas Riffo"
+date: "2025-05-06"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+data = read.csv2("student-mat.csv")
+```
+
+Vamos a mostrar algunos ejemplos para graficar.
+graficos:
+  + De barras
+  + De caja
+  + De circulo
+
+a.) Vamos a realizar un grafico de barras
+```{r}
+tabla <- table(data$sex)
+print(tabla)
+
+barplot(tabla,                               # Datos
+        main = "Gráfico de barras",             # Título
+        xlab = "Número de cilindros",           # Etiqueta del eje X
+        ylab = "Frecuencia",                    # Etiqueta del eje Y
+        border = "black",                       # Color del borde de las barras
+        col = c("darkgrey", "darkblue", "red")) # Color para cada barra
+```
+
+también podemos hacerlo con ggplot2
+```{r}
+ggplot(data, aes(x = factor(sex))) +
+  geom_bar(fill = "skyblue") +
+  labs(x = "Tiempo de estudio", y = "Sexo codificado", title = "Boxplot sexo vs tiempo de estudio")
+```
+
+b. Vamos a realizar un grafico de caja
+```{r}
+library(dplyr)
+
+data <- data %>% mutate(sex_num = ifelse(sex == "F", 1, 0))
+
+boxplot(studytime ~ sex_num, data = data, 
+        col = rgb(0, 0.5, 1, alpha = 0.5),
+        xlab = "Tiempo de estudio", ylab = "Sexo codificado (1 = Mujer, 0 = Hombre)",
+        main = "Boxplot de tiempo de estudio según genero")
+
+```
+
+también podemos usar ggplot 2
+```{r}
+library(ggplot2)
+
+ggplot(data, aes(x = factor(sex_num), y = studytime)) + # Lo que quiero graficar, en el eje x pongo los generos y en el eje y coloco el tiempo.
+  geom_boxplot(fill = "skyblue") + # El tipo de grafica que quiero
+  labs(x = "Tiempo de estudio", y = "Sexo", title = "Boxplot sexo vs tiempo de estudio") #Las etiquetas
+```
+
+c. Y podemos hacer un grafico de violin
+```{r}
+library(ggplot2)
+
+ggplot(data, aes(x = factor(sex_num), y = studytime)) +
+  geom_violin(fill = "skyblue",
+              draw_quantiles = c(0.25, 0.5, 0.75)) +
+  labs(x = "Tiempo de estudio", y = "Sexo", title = "Boxplot sexo vs tiempo de estudio")
+```
+
+d. Vamos hacer un grafico de histograma
+```{r}
+ggplot(data, aes(x = studytime, fill = factor(sex_num, labels = c("Hombre", "Mujer")))) +
+  geom_histogram(binwidth = 1, position = "dodge", color = "black") +
+  labs(x = "Tiempo de estudio",
+       y = "Frecuencia",
+       fill = "Sexo",
+       title = "Histograma del tiempo de estudio por sexo") +
+  scale_fill_manual(values = c("skyblue", "pink")) +
+  theme_minimal()
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(data, aes(x = "", fill = factor(sex_num, labels = c("Hombre", "Mujer")))) +
+  geom_bar(width = 1) +
+  coord_polar("y") +
+  labs(title = "Distribución por sexo", fill = "Sexo") +
+  theme_void()
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+#Filtramos por los hombres
+data_hombres <- data %>% 
+  filter(sex_num == 0)
+
+#Contamos la cantidad por tiempo de estudio a través de esta función
+study_summary <- data_hombres %>%
+  group_by(studytime) %>%
+  summarise(cantidad = n())
+
+#Hacemos el grafico de sectores
+ggplot(study_summary, aes(x = "", y = cantidad, fill = factor(studytime))) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "Distribución del tiempo de estudio (Hombres)",
+       fill = "Tiempo de estudio") +
+  theme_void()
+```

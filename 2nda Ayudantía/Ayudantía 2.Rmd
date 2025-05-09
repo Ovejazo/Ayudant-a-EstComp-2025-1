@@ -106,10 +106,10 @@ library(ggplot2)
 desviacion_estandar <- sqrt(varianza)
 
 # Rango de valores para X (por ejemplo, de -3 a +3 desviaciones estándar)
-x <- seq(media - 4*varianza, media + 4*varianza, length.out = 1000)
+x <- seq(media - 4*desviacion_estandar, media + 4*desviacion_estandar, length.out = 1000)
 
 # Distribución normal para Y (densidad de probabilidad)
-y <- dnorm(x, mean = media, sd = varianza)
+y <- dnorm(x, mean = media, sd = desviacion_estandar)
 
 # Crear el dataframe para ggplot
 df <- data.frame(x = x, y = y)
@@ -118,7 +118,7 @@ df <- data.frame(x = x, y = y)
 ggplot(df, aes(x = x, y = y)) +
   geom_line(color = "blue") + 
   # Colorear el área bajo la curva para representar el 68%
-  geom_ribbon(data = df[x >= (media - varianza) & x <= (media + varianza), ],
+  geom_ribbon(data = df[x >= (media - desviacion_estandar) & x <= (media + desviacion_estandar), ],
               aes(ymax = y), ymin = 0, fill = "skyblue", alpha = 0.5) +
   # Colocar la media en la gráfica
   geom_vline(xintercept = media, color = "red", linetype = "dashed") +
@@ -134,8 +134,8 @@ ggplot(df, aes(x = x, y = y)) +
 
 ```{r}
 #Creacion de un grafico para distribucion normal para las notas 
-x=seq(1,7,by=0.01) # Creacion de arreglo para eje x
-y=dnorm(x,prom,varianza) # Distribucion normal
+x=seq(-5,15,by=0.01) # Creacion de arreglo para eje x
+y=dnorm(x,prom,des_vest) # Distribucion normal
 datos=data.frame(x,y)
 #Grafico
 p = ggplot(data.frame(x = x, y = y)) + aes(x = x, y = y)
