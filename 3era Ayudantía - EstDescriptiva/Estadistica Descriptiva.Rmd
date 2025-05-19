@@ -112,3 +112,77 @@ ggplot(study_summary, aes(x = "", y = cantidad, fill = factor(studytime))) +
        fill = "Tiempo de estudio") +
   theme_void()
 ```
+
+# Tarea 3
+1. Diagrama de violin que compare los tiempos de viaje entre hombres y mujeres
+```{r}
+# Leemos los datos
+datos <- read.csv2("student-mat.csv")
+
+
+# Hagamos el diagrama de caja
+library(dplyr)
+library(ggplot2)
+
+datos <- datos %>% mutate(genero_num = ifelse(sex == "F", 1, 0))
+
+muestra_mujer <- datos %>% filter(sex == "F")
+muestra_hombre <- datos %>% filter(sex == "M")
+
+ggplot(datos, aes(x = factor(genero_num), y = traveltime)) +
+  geom_violin(fill = "skyblue",
+              draw_quantiles = c(0.25, 0.5, 0.75)) +
+  labs(x = "Tiempo de estudio", y = "Sexo", title = "Boxplot sexo vs tiempo de estudio")
+
+boxplot(muestra_mujer$traveltime, data = muestra_mujer, 
+        col = rgb(0, 0.5, 1, alpha = 0.5),
+        xlab = "Tiempo de estudio", ylab = "Sexo codificado (1 = Mujer, 0 = Hombre)",
+        main = "Boxplot de tiempo de estudio según genero")
+
+boxplot(muestra_hombre$traveltime, data = muestra_hombre, 
+        col = rgb(0, 0.5, 1, alpha = 0.5),
+        xlab = "Tiempo de estudio", ylab = "Sexo codificado (1 = Mujer, 0 = Hombre)",
+        main = "Boxplot de tiempo de estudio según genero")
+```
+2. Que proporción hay más de hombre que de mujeres que tienen tiempo libre
+```{r}
+print("Muestra de hombres con tiempo libre:\n")
+summary(muestra_hombre$freetime)
+print("Muestra de mujeres con tiempo libre:\n")
+summary(muestra_mujer$freetime)
+
+ggplot(datos, aes(x = factor(genero_num), y = freetime)) +
+  geom_violin(fill = "skyblue",
+              draw_quantiles = c(0.25, 0.5, 0.75)) +
+  labs(x = "Tiempo de estudio", y = "Sexo", title = "Boxplot sexo vs tiempo de estudio")
+```
+
+Podemos mostrar la cantidad de veces que hombres y mujeres tienen 4 horas libres
+```{r}
+#Contamos la cantidad por tiempo de estudio a través de esta función
+study_summary_hombre <- muestra_hombre %>%
+  group_by(freetime) %>%
+  summarise(cantidad = n())
+
+#Hacemos el grafico de sectores
+ggplot(study_summary_hombre, aes(x = "", y = cantidad, fill = factor(freetime))) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "Distribución del tiempo de estudio (Hombres)",
+       fill = "Tiempo de estudio") +
+  theme_void()
+
+#Contamos la cantidad por tiempo de estudio a través de esta función
+study_summary_mujer <- muestra_mujer %>%
+  group_by(freetime) %>%
+  summarise(cantidad = n())
+
+#Hacemos el grafico de sectores
+ggplot(study_summary_mujer, aes(x = "", y = cantidad, fill = factor(freetime))) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "Distribución del tiempo de estudio (Mujer)",
+       fill = "Tiempo de estudio") +
+  theme_void()
+```
+

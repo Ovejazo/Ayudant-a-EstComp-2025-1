@@ -1,0 +1,79 @@
+---
+title: "Ayudantía°4"
+author: "Thomas Riffo"
+date: "2025-05-15"
+output: html_document
+---
+```{r}
+library(dplyr)
+library(ggpubr)
+library(BSDA)
+library(TeachingDemos)
+```
+
+
+Aquí inicia la parte buena
+
+***Para estadistica inferencial usamos distintos tipos de pruebas para comprobar si los estimadores puntutales corresponden o no la población. Un ejemplo burdo sería "queremos verificar si efectivamente la altura de población, en promedio, es 1,80.***
+
+Vamos a dar un ejemplo más real para ejercitar esta materia.
+
+"Una empresa fabrica y arma escritorios u otros muebles para oficina. La producción semanal del escritorio modelo A325 tiene una distribución normal, con una media de 200 y una desviación estándar de 16. Hace poco, con motivo de la expansión de mercado, se introdujeron nuevos métodos de producción y se contrató a más empleados. El vicepresidente de fabricación pretenden investigar si hubo algún cambio en la producción semanal del escritorio. En otras palabras, ¿la cantidad media de escritorios que se produjeron es diferente de 200 escritorios semanales?, utilice un nivel de significancia de 0.01. En una muestra de 50 semanas la cantidad media de escritorios que se produjeron fue de 203.5.
+
+
+Vamos a comenzar con el analisis
+
+Hipotesis: 
+
+$$ H_o: \mu = 200  $$
+$$ H_a: \mu \ne 200  $$
+El significado de la hipótesis nula significa estatus quo, es decir, que las cosas se mantengan iguales, esto se debe que lo que nosotros queremos es que idealmente las cosas sean como queremos y se mantengan durante el tiempo.
+
+En este caso definimos que la hipotesis nula es que la media "se mantiene en" 203.5 y que nuestra alternativa es que "sera distinto" a 203.5.
+
+```{r}
+# definimos los datos que nos entregan
+muestra <- rep(203.5, 50)
+mu <- 200 
+media <- 203.5
+sd <- 16
+nivel_significancia <- 0.01
+
+# Conseguimos el valor z
+valor_z <- ((203.5 - 200)/(16/sqrt(50))) 
+cat("valor z:", valor_z, "\n")
+
+# Con el valor z conseguido, podemos usar el pnorm
+valor_normal <- 2 * pnorm(valor_z, lower.tail = FALSE)
+cat("Valor de la distribución normal: ",valor_normal)
+```
+
+Ahora vamos a aplicar la prueba z
+```{r}
+# En esta forma de aplicar la pruebza z usamos la media muestral, la media poblacional y 
+prueba1 <- z.test(media,
+                 mu = mu,
+                 n = 50, 
+                 alternative = "two.sided",
+                 conf.level = 1 - nivel_significancia,
+                 stdev = sd)
+print(prueba1)
+```
+Hay otra opción más
+```{r}
+# En esta prueba usamos:
+# Una muestra y el valor de la media poblacional.
+prueba2 <- z.test(muestra,
+                  mu = mu,
+                  alternative = "two.sided",
+                  stdev = sd,
+                  conf.level = 1 - nivel_significancia)
+print(prueba2)
+```
+
+
+```{r}
+# Con el valor z conseguido, podemos usar el pnorm
+valor_normal <- pnorm(-1.95, lower.tail = FALSE)
+cat("Valor de la distribución normal: ",valor_normal)
+```
